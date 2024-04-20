@@ -5,4 +5,6 @@
 
 int server_init();
 
+int client_disconnect(int epfd,client_info *head,int connfd);
+
 #endif

@@ -6,7 +6,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include "server_init.h"
+#include "server.h"
 
 int server_init()
 {
@@ -48,4 +48,17 @@ int server_init()
 	}
 
 	return server;
+}
+
+int client_disconnect(int epfd,client_info *head,int connfd)
+{
+	//客户端断开连接删除红黑树节点和链表信息
+	struct epoll_events tmp;
+	tmp.data.fd = connfd;
+	tmp.events = EPOLLIN;
+	int ret = epoll_ctl(epfd,EPOLL_CTL_DEL,connfd,&tmp);
+	if(ret < 0)
+		return -1;
+	delete(head,connfd);
+	return 0;
 }
