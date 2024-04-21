@@ -76,6 +76,7 @@ int main()
 						exit(-1);
 					}else if(ret == 0)
 					{
+						//客户端失去连接删除红黑树节点和链表节点
 						if(client_disonnect(epfd,head,connfd) < 0)
 						{
 							perror("client_disconnect");

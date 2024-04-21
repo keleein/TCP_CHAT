@@ -6,19 +6,52 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include "client.h"
-#include "thread.h"
 
 #define WRITEBUF 64
 
 int main()
 {
-	//初始化客户端
-	int client = client_init();
-	if(client < 0)
+	//欢迎界面
+	int ret = 0;
+	while(1)
 	{
-		perror("client_init");
-		exit(-1);
+		printf("---------welcome----------");
+		printf("---------1.login----------");
+		printf("--------2.sign up--------");
+		printf("---------3.exit-----------");
+		int jud = 0;
+		scanf("%d",&jud);
+		switch(jud){
+			case 1:
+				//登录
+				int client = login();
+				if(client < 0)
+				{
+					printf("login failed! please try again!\n");
+					continue;
+				}
+				homepage();
+				break;
+			case 2:
+				//注册
+				ret = signup();
+				if(ret < 0)
+				{
+					printf("sign up failed! please try again!\n");
+					continue;
+				}
+				printf("sign up success! please login!\n");
+				continue;		
+			case 3:
+				//exit
+				exit(-1);
+				break;
+			default:
+				printf("parameter error!\n");
+				continue;
+		}
 	}
+
 
 	//创建单一线程接收信息并显示
 	pthread_t thread_read;
