@@ -122,7 +122,7 @@ int signup()
 }
 
 //用户主页面
-int homepage()
+int homepage(int client)
 {
 	while(1)
 	{
@@ -136,6 +136,7 @@ int homepage()
 		switch(jud)
 		{
 			case 1:
+				group_page(client);
 				break;
 			case 2:
 				break;
@@ -147,6 +148,81 @@ int homepage()
 				printf("parameter error!\n");
 		}
 	}
+}
+
+void group_page(int client)
+{
+	while(1)
+	{
+		printf("---------------当前用户：%s-------------------",login_account.nickname);
+		printf("---------------1.服务器列表-------------------");
+		printf("---------------2.自建群聊列表-----------------");
+		int jud = 0;
+		scanf("%d",&jud);
+		switch(jud)
+		{
+			case 1:
+				//获取群聊列表
+				group *ready = get_group_list(client,1);
+				if(ready == NULL)
+				{
+					printf("获取群聊列表失败!\n");
+					continue;
+				}
+
+				//展示群聊列表
+				show_group(ready);
+				break;
+			case 2:
+				get_group_list(client,2);
+				break
+			default:
+				printf("parameter error!\n");
+		}
+	}
+}
+
+//获取当前群聊列表
+group *get_group_list(int client,int info_type)	//info_type 1服务器列表 2自建群聊列表
+{
+	//发送info_type请求服务器信息
+	group get_info;
+	get_info.info_type = info_type;
+	int ret = send(client,&get_info,sizeof(get_info),0);
+	if(ret < 0)
+	{
+		perror("get_group_list_send");
+		return NULL;
+	}
+
+	//接收服务器反馈信息
+	group ready[READY_GROUP];
+	ret = recv(client,&ready,sizeof(ready),0);
+	if(ret < 0)
+	{
+		perror("get_group_list_recv");
+		return NULL;
+	}
+	
+	return ready;
+}
+
+//展示群聊列表
+void show_group(group *ready)
+{
+	for(int i = 0; i < READY_GROUP; i++)
+	{
+		//输出有效信息
+		if(ready[i].group_id != -1)
+		{
+			printf("--------------id:%d-%s--------------\n",ready[i].group_id,ready[i].group_name);
+		}
+	}
+}
+
+void join_group(int client)
+{
+	get_group_list(client);
 }
 
 //线程函数：读取服务器消息

@@ -15,10 +15,10 @@ int main()
 	int ret = 0;
 	while(1)
 	{
-		printf("---------welcome----------");
-		printf("---------1.login----------");
-		printf("--------2.sign up--------");
-		printf("---------3.exit-----------");
+		printf("----------欢迎使用TCP聊天室------------");
+		printf("---------------1.登录------------------");
+		printf("---------------2.注册------------------");
+		printf("---------------3.退出------------------");
 		int jud = 0;
 		scanf("%d",&jud);
 		switch(jud){
@@ -30,7 +30,7 @@ int main()
 					printf("login failed! please try again!\n");
 					continue;
 				}
-				homepage();
+				homepage(client);
 				break;
 			case 2:
 				//注册
