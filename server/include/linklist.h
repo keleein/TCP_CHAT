@@ -14,7 +14,7 @@ client_info *list_init();
 
 void insert(client_info *head,int connfd,const char *ip,unsigned short port);
 
-void delete(client_info *head,int connfd);
+void node_delete(client_info *head,int connfd);
 
 void modify_nickname(client_info *head,int connfd,char *nickname);
 

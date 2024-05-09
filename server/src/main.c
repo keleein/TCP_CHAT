@@ -1,15 +1,7 @@
 #include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/types.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
 #include "server.h"
 #include "linklist.h"
 #include "myepoll.h"
-
-#define BUF_SIZE 64
 
 int main()
 {
@@ -20,7 +12,7 @@ int main()
 	int epfd = epoll_init(server);
 
 	//epoll监听客户端连接和发送
-	char buf[BUF_SIZE] = {0};
+	char *buf = NULL;
 	while(1)
 	{
 		int max = epoll_wait(epfd,&ready,-1);
@@ -37,36 +29,9 @@ int main()
 				int fd = ready[i].data.fd;
 				if(fd == server)
 				{
-					//添加客户端到红黑树以监听发送
-					int connfd = accept(server,&client_addr,&client_len);
-					if(connfd < 0)
-					{
-						perror("accept");
-						exit(-1);
-					}
-
-					//添加客户端到epoll树进行监听
-					epoll_add(epfd,connfd);
-
-					//使用链表存储客户端信息以便广播和组播
-					insert(head,connfd,inet_ntoa(client_addr.sin_addr),ntohs(client_addr.sin_port));		
+					server_accept(fd,epfd);
 				}else{
-					//接收客户端信息
-					ret = recv(fd,buf,sizeof(buf),0);
-					if(ret < 0)
-					{
-						perror("recv");
-						exit(-1);
-					}else if(ret == 0)
-					{
-						//客户端失去连接删除红黑树节点和链表节点
-						if(epoll_delete(epfd,fd) == 0)
-						{
-							printf("client %d has disconnected!\n",fd);
-						}
-					}else{
-						//默认buf信息为广播信息，@开头
-					}
+					server_recv_data(fd,epfd,&buf);
 				}
 			}
 		}

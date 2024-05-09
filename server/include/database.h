@@ -1,5 +1,5 @@
-#ifndef _DATA_FUNC_C_
-#define _DATA_FUNC_C_
+#ifndef _DATABASE_C_
+#define _DATABASE_C_
 
 #include <sqlite3.h>
 

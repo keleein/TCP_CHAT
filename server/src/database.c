@@ -2,7 +2,7 @@
 #include <sqlite3.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include "data_func.h"
+#include "database.h"
 
 sqlite3 *open_database(const char *pathname)
 {

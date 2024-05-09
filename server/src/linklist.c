@@ -35,7 +35,7 @@ void insert(client_info *head,int connfd,const char *ip,unsigned short port)
 }
 
 //删除指定客户端
-void delete(client_info *head,int connfd)
+void node_delete(client_info *head,int connfd)
 {
 	if(head->next != NULL)
 	{
